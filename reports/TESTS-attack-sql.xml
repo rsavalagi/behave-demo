@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<testsuite errors="0" failures="0" hostname="virsec-VirtualBox" name="attack-sql.RHEL-JBoss-Benchmark" skipped="0" tests="1" time="0.000516" timestamp="2018-05-24T22:12:26.594733"><testcase classname="attack-sql.RHEL-JBoss-Benchmark" name="Execute an sql attack for the setup RHEL-Jboss-Benchmark" status="passed" time="0.000516"><system-out>
+<testsuite errors="0" failures="0" hostname="virsec-VirtualBox" name="attack-sql.RHEL-JBoss-Benchmark" skipped="0" tests="1" time="0.000331" timestamp="2018-05-29T01:44:30.347155"><testcase classname="attack-sql.RHEL-JBoss-Benchmark" name="Execute an sql attack for the setup RHEL-Jboss-Benchmark" status="passed" time="0.000331"><system-out>
 <![CDATA[
 @scenario.begin
   Scenario: Execute an sql attack for the setup RHEL-Jboss-Benchmark
