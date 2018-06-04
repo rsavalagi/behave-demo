@@ -6,4 +6,3 @@ Feature: RHEL-JBoss-Benchmark
     Then storedXSS attack is detected and appropriate status is available
 
 
-
