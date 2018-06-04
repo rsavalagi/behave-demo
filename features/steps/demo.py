@@ -27,4 +27,4 @@ def step_impl(context):
 
 @then('sql attack is detected and appropriate status is available')
 def step_impl(context):
-    assert context.failed is True
+    assert context.failed is False
