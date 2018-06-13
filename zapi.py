@@ -11,20 +11,19 @@ import sys
 import platform
 import random
 import math
+import os
 
 # args $JENKINS_BUILD_NUM $ZEP_USER $ZEP_ACCESS_KEY $ZEP_SECRET_KEY
 
-try:
-    # USER
-    USER = sys.argv[1]
 
-    # ACCESS KEY from navigation >> Tests >> API Keys
-    ACCESS_KEY = sys.argv[2]
+# USER
+USER = 'admin'
 
-    # ACCESS KEY from navigation >> Tests >> API Keys
-    SECRET_KEY = sys.argv[3]
-except Exception:
-    print "please provide args: email, access_key and secret_key"
+# ACCESS KEY from navigation >> Tests >> API Keys
+ACCESS_KEY = 'ZmQ2Nzk0OTktN2U3YS0zNWQ0LWIxYjgtM2I0MzBmM2FiNTdmIGFkbWluIFVTRVJfREVGQVVMVF9OQU1F'
+
+# ACCESS KEY from navigation >> Tests >> API Keys
+SECRET_KEY = 'wACKWxXWT9kYLS__bGU6K8aPiiUzEswscsq3MxL2X2Q'
 
 # JWT EXPIRE how long token been to be active? 3600 == 1 hour
 JWT_EXPIRE = 3600
@@ -32,11 +31,11 @@ JWT_EXPIRE = 3600
 # BASE URL for Zephyr for Jira Cloud
 BASE_URL = 'https://prod-api.zephyr4jiracloud.com/connect'
 
-
-pass_res=[]
+pass_res = []
 failed_res = []
 unexecuted = []
-final_result ={}
+final_result = {}
+
 
 def is_json(data):
     try:
@@ -80,11 +79,11 @@ class zephyr_integration:
         # creat the test cycle name:
         date = datetime.datetime.now()
         # test_cycle_name = 'rest_test_'+datetime.datetime.now().strftime('%M:%S.%f')[:-4]
-        test_cycle_name = 'BVT-' + build_no + ' ' + date.strftime("%D %H:%M")
+        test_cycle_name = 'BVT-' + str(build_no) + ' ' + date.strftime("%D %H:%M")
 
         cycle = {
             'name': test_cycle_name,
-            'projectId': 10600,
+            'projectId': 10000,
             'versionId': -1
         }
 
@@ -120,7 +119,7 @@ class zephyr_integration:
 
         # creat the test cycle name:
 
-        cycle = {"jql": "project = RL AND type = TEST AND LABELS = BVT", "versionId": -1, "projectId": 10600,
+        cycle = {"jql": "project = VRSC AND type = TEST AND LABELS = BVT", "versionId": -1, "projectId": 10000,
                  "method": "2"}
 
         # MAKE REQUEST:
@@ -138,12 +137,11 @@ class zephyr_integration:
         else:
             print(raw_result.text)
 
-
-            # cycle = {"offset":0,"maxRecords":20,"fields":{},"zqlQuery":"project = \"RL\" AND fixVersion = \"Unscheduled\" AND cycleName = \"bvt\""}
+            # cycle = {"offset":0,"maxRecords":20,"fields":{},"zqlQuery":"project = \"VRSC\" AND fixVersion = \"Unscheduled\" AND cycleName = \"bvt\""}
 
     def get_all_execution_ids_and_testnames(self, testname):
         # cycleindex="0001505977226965-242ac112-0001"
-        jql = "project = \"RL\" AND fixVersion = \"Unscheduled\" AND cycleName = \"%s\"" % (testname)
+        jql = "project = \"VRSC\" AND fixVersion = \"Unscheduled\" AND cycleName = \"%s\"" % (testname)
         RELATIVE_PATH = '/public/rest/api/1.0/zql/search'
         CANONICAL_PATH = 'POST&' + RELATIVE_PATH + '&'
         token = self.create_token(RELATIVE_PATH)
@@ -160,12 +158,12 @@ class zephyr_integration:
 
             # JSON RESPONSE: convert response to JSON
             json_result = json.loads(raw_result.text)
-            #pprint (json_result)
+            # pprint (json_result)
             print json_result.keys()
             total = json_result['totalCount']
             offset = json_result['currentOffset']
-            print offset,total
-            self.combine_offset_based_data(total,testname)
+            print offset, total
+            self.combine_offset_based_data(total, testname)
             # searh_obj = json_result['searchObjectList']
             # for each in searh_obj:
             #     # print  each['issueKey'],each ['issueSummary'] , "\t executionID:" + each['execution']['id']
@@ -177,8 +175,8 @@ class zephyr_integration:
         else:
             print(raw_result.text)
 
-    def combine_offset_based_data(self,count,testname):
-        jql = "project = \"RL\" AND fixVersion = \"Unscheduled\" AND cycleName = \"%s\"" % (testname)
+    def combine_offset_based_data(self, count, testname):
+        jql = "project = \"VRSC\" AND fixVersion = \"Unscheduled\" AND cycleName = \"%s\"" % (testname)
         RELATIVE_PATH = '/public/rest/api/1.0/zql/search'
         CANONICAL_PATH = 'POST&' + RELATIVE_PATH + '&'
         token = self.create_token(RELATIVE_PATH)
@@ -189,16 +187,16 @@ class zephyr_integration:
         }
 
         print "calculating the how many offsets present"
-        float_data = count/10.0
-        offset = int (math.ceil(float_data))
+        float_data = count / 10.0
+        offset = int(math.ceil(float_data))
 
-        #Now for each offset send a post request and append the data so that all can be updated.
+        # Now for each offset send a post request and append the data so that all can be updated.
         global final_result
 
-        for each in range (0,offset+1):
+        for each in range(0, offset + 1):
             print "inside each"
-            cycle = {"offset": each*10, "maxRecords": 50, "fields": {}, "zqlQuery": jql}
-            pprint (cycle)
+            cycle = {"offset": each * 10, "maxRecords": 50, "fields": {}, "zqlQuery": jql}
+            pprint(cycle)
             raw_result = requests.post(BASE_URL + RELATIVE_PATH, headers=headers, json=cycle)
             if is_json(raw_result.text):
 
@@ -206,12 +204,11 @@ class zephyr_integration:
                 json_result = json.loads(raw_result.text)
                 searh_obj = json_result['searchObjectList']
                 for each in searh_obj:
-                    #print  each['issueKey'],each ['issueSummary'] , "\t executionID:" + each['execution']['id']
+                    # print  each['issueKey'],each ['issueSummary'] , "\t executionID:" + each['execution']['id']
                     final_result[each['issueKey'].strip()] = each['execution']['id']
 
         pprint(final_result)
         print "------------------------------------------------"
-
 
     def update_status_in_jira(self):
         RELATIVE_PATH = '/public/rest/api/1.0/executions'
@@ -275,52 +272,57 @@ class zephyr_integration:
 
     def read_junit_xml(self, local_container_path=None):
         print "reading the file from provided path"
-        local_container_path = '/root/results/junit.xml'
-        with open(local_container_path, "rb") as f:  # notice the "rb" mode
-            d = xmltodict.parse(f, xml_attribs=True)
-            result_json = json.dumps(d, indent=4)
+        reports_path = 'reports'
 
-        test_data = json.loads(result_json)['testsuite']['testcase']
+        xml_files = os.listdir(reports_path)
 
-        failed = []
-        passed = []
-        result = {}
+        for xml in xml_files:
+            local_container_path = os.path.join(reports_path, xml)
+            with open(local_container_path, "rb") as f:  # notice the "rb" mode
+                d = xmltodict.parse(f, xml_attribs=True)
+                result_json = json.dumps(d, indent=4)
 
-        for each in test_data:
-            # result[each['@name']]= try: if each['failure']:   return 'FAIL'   else: return 'PASS'
-            try:
-                if each['failure']:
-                    result[each['@name'].strip()] = 'FAIL'
-            except Exception as e:
-                result[each['@name'].strip()] = 'PASS'
+            test_data = json.loads(result_json)['testsuite']['testcase']
 
-        pprint(result)
-        extracted_RL_val = {}
+            failed = []
+            passed = []
+            result = {}
 
-        for each in result.iterkeys():
-            try:
-                match = re.search(r'^RL\-(\d){4}', each)
-                # print match.group()
-                extracted_RL_val[match.group()] = result[each]
+            for each in test_data:
+                # result[each['@name']]= try: if each['failure']:   return 'FAIL'   else: return 'PASS'
+                try:
+                    if each['failure']:
+                        result[each['@name'].strip()] = 'FAIL'
+                except Exception as e:
+                    result[each['@name'].strip()] = 'PASS'
+
+            pprint(result)
+            extracted_VRSC_val = {}
+
+            for each in result.iterkeys():
+                try:
+                    match = re.search(r'^VRSC\-(\d){4}', each)
+                    # print match.group()
+                    extracted_VRSC_val[match.group()] = result[each]
 
 
-            except AttributeError:
-                # print each
-                extracted_RL_val[each] = result[each]
+                except AttributeError:
+                    # print each
+                    extracted_VRSC_val[each] = result[each]
 
-        tests = {}
-        execution_ids = final_result
+            tests = {}
+            execution_ids = final_result
 
-        print "debug xml"
-        print execution_ids
+            print "debug xml"
+            print execution_ids
 
-        for test in extracted_RL_val:
-            tests[test] = extracted_RL_val[test]
+            for test in extracted_VRSC_val:
+                tests[test] = extracted_VRSC_val[test]
 
-        # with open("jira_output.txt", 'r') as infile:
-        #     for line in infile:
-        #         execution_ids[line.split(",")[0]] = line.split(",")[1].strip()
-        # print "extension ids for tests" % tests
+            # with open("jira_output.txt", 'r') as infile:
+            #     for line in infile:
+            #         execution_ids[line.split(",")[0]] = line.split(",")[1].strip()
+            # print "extension ids for tests" % tests
 
         def prepare_final_data(res):
             # pass_res=[]
@@ -350,25 +352,17 @@ class zephyr_integration:
             return result
 
         res = (combineDictVal(tests, execution_ids))
-        print "res is %s" %(res)
+        print "res is %s" % (res)
         prepare_final_data(res)
 
 
 if __name__ == '__main__':
-    try:
-        build = sys.argv[4]
-        if build.isalnum():
-            build_no = build
-        else:
-            build_no = platform.node()
-    except:
-        build_no = "0000"
-
+    build_no = int(time.time())
 
     z = zephyr_integration()
     cycle_id, name = z.create_test_cycle(build_no)
-    #name = 'BVT-138 10/05/17 18:48'
-    #cycle_id = '0001507209531832-242ac112-0001'
+    # name = 'BVT-138 10/05/17 18:48'
+    # cycle_id = '0001507209531832-242ac112-0001'
     z.add_tests_to_cycle(cycle_id)
     z.get_all_execution_ids_and_testnames(name)
     z.read_junit_xml()

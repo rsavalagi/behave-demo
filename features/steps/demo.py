@@ -13,7 +13,7 @@ def step_impl(context):
 
 @then('storedXSS attack is detected and appropriate status is available')
 def step_impl(context):
-    assert context.failed is False
+    assert context.failed is True
 
 @given('a setup Windows-Jboss-Benchmark')
 def step_impl(context):

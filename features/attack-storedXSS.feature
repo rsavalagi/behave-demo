@@ -1,4 +1,4 @@
-Feature: Windows-JBoss-Benchmark
+Feature: Windows-JBoss-Benchmark VRSC-26
 
   Scenario: Execute an sql attack for the setup Windows-Jboss-Benchmark
     Given a setup Windows-Jboss-Benchmark
