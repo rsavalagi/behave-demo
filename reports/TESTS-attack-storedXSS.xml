@@ -1,11 +1,24 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<testsuite errors="0" failures="0" hostname="virsec-VirtualBox" name="attack-storedXSS.Windows-JBoss-Benchmark VRSC-26" skipped="0" tests="1" time="0.000231" timestamp="2018-06-11T15:25:50.445674"><testcase classname="attack-storedXSS.Windows-JBoss-Benchmark VRSC-26" name="Execute an sql attack for the setup Windows-Jboss-Benchmark" status="passed" time="0.000231"><system-out>
+<testsuite errors="0" failures="1" hostname="virsec-VirtualBox" name="attack-storedXSS.Windows-JBoss-Benchmark VRSC-26" skipped="0" tests="1" time="0.000417" timestamp="2018-06-14T12:49:48.840621"><testcase classname="attack-storedXSS.Windows-JBoss-Benchmark VRSC-26" name="Execute an sql attack for the setup Windows-Jboss-Benchmark" status="failed" time="0.000417"><failure message="" type="AssertionError">
+<![CDATA[
+Failing step: Then sql attack is detected and appropriate status is available ... failed in 0.000s
+Location: features/attack-storedXSS.feature:6
+Traceback (most recent call last):
+  File "/home/virsec/.local/lib/python2.7/site-packages/behave/model.py", line 1329, in run
+    match.run(runner.context)
+  File "/home/virsec/.local/lib/python2.7/site-packages/behave/matchers.py", line 98, in run
+    self.func(context, *args, **kwargs)
+  File "features/steps/demo.py", line 31, in step_impl
+    assert context.failed is False
+AssertionError
+]]>
+</failure><system-out>
 <![CDATA[
 @scenario.begin
   Scenario: Execute an sql attack for the setup Windows-Jboss-Benchmark
     Given a setup Windows-Jboss-Benchmark ... passed in 0.000s
     When sql attack is performed ... passed in 0.000s
-    Then sql attack is detected and appropriate status is available ... passed in 0.000s
+    Then sql attack is detected and appropriate status is available ... failed in 0.000s
 
 @scenario.end
 --------------------------------------------------------------------------------
