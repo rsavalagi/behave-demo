@@ -5,6 +5,10 @@ from behave import *
 def step_impl(context):
     pass
 
+@given('a setup RHEL-Jboss-webgoat')
+def step_impl(context):
+    pass
+
 
 @when('storedXSS attack is performed')
 def step_impl(context):
